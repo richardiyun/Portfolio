@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex Rivera — Engineer & Researcher Portfolio</title>
+  
+  <!-- Google Fonts: Newsreader (refined editorial serif) + Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- QRCode.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              ivory: '#FAF7F2',       // Classic Claude warm oatmeal background
+              surface: '#F3EFEA',     // Card surface / subtle contrast
+              surfaceHover: '#EBE5DC',
+              charcoal: '#1D1917',    // Deep ink tone
+              muted: '#68625B',       // Muted text
+              subtle: '#9A9289',      // Borders & secondary text
+              terracotta: '#CC553D',  // Claude distinct warm clay accent
+              terracottaHover: '#B6442E',
+              border: 'rgba(29, 25, 23, 0.1)',
+              tag: 'rgba(204, 85, 61, 0.08)'
+            }
+          },
+          fontFamily: {
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom styling for Claude editorial feel */
+    body {
+      background-color: #FAF7F2;
+      color: #1D1917;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    ::selection {
+      background-color: #F0D4CD;
+      color: #1D1917;
+    }
+
+    .editorial-border {
+      border: 1px solid rgba(29, 25, 23, 0.1);
+    }
+
+    .editorial-border-b {
+      border-bottom: 1px solid rgba(29, 25, 23, 0.1);
+    }
+
+    /* Subtle grain texture overlay */
+    .bg-grain {
+      background-image: radial-gradient(rgba(29, 25, 23, 0.04) 1px, transparent 0);
+      background-size: 24px 24px;
+    }
+
+    /* Toast animation */
+    #toast {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col bg-brand-ivory text-brand-charcoal selection:bg-[#EED5CE] relative bg-grain">
+
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-brand-ivory/85 editorial-border-b transition-all">
+    <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+      <!-- Monogram Logo -->
+      <a href="#" onclick="showGalleryView(); return false;" class="flex items-center gap-3 group focus:outline-none">
+        <span class="w-8 h-8 rounded-full bg-brand-charcoal text-brand-ivory font-serif text-lg font-light flex items-center justify-center transition-transform group-hover:scale-105">
+          AR
+        </span>
+        <div class="flex flex-col">
+          <span class="font-semibold text-sm tracking-tight group-hover:text-brand-terracotta transition-colors">Alex Rivera</span>
+          <span class="text-[11px] text-brand-muted tracking-wide uppercase font-mono">Portfolio</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links & Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-6 text-sm">
+        <nav class="hidden sm:flex items-center gap-6">
+          <a href="#about" onclick="showGalleryView()" class="text-brand-muted hover:text-brand-charcoal font-medium transition-colors">About</a>
+          <a href="#projects" onclick="showGalleryView()" class="text-brand-muted hover:text-brand-charcoal font-medium transition-colors">Projects</a>
+          <button onclick="openVercelGuide()" class="text-brand-muted hover:text-brand-charcoal font-medium transition-colors">Deploy Info</button>
+        </nav>
+
+        <!-- QR Code Modal Launcher -->
+        <button onclick="openQRModal()" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium border border-brand-charcoal/20 hover:border-brand-terracotta hover:bg-brand-tag text-brand-charcoal transition-all">
+          <svg class="w-3.5 h-3.5 text-brand-terracotta" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+          </svg>
+          <span class="hidden sm:inline">Resume QR Code</span>
+          <span class="sm:hidden">QR</span>
+        </button>
+
+        <a href="#contact" onclick="showGalleryView()" class="bg-brand-charcoal text-brand-ivory text-xs px-3.5 py-1.5 rounded-full hover:bg-brand-terracotta transition-colors font-medium">
+          Get in Touch
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-5xl mx-auto px-6 py-10 w-full">
+
+    <div id="gallery-container">
+      
+      <!-- Top Deployment Callout Notice for Vercel -->
+      <section class="mb-10 p-4 rounded-xl border border-brand-terracotta/30 bg-[#FAF1EE] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-start sm:items-center gap-3">
+          <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-brand-terracotta/10 text-brand-terracotta flex items-center justify-center font-mono text-sm font-semibold">▲</span>
+          <div>
+            <h4 class="text-sm font-semibold text-brand-charcoal">Zero-Setup Vercel Deployment Ready</h4>
+            <p class="text-xs text-brand-muted mt-0.5">Push this file to GitHub or drag it to Vercel for free hosting with your personal custom link.</p>
+          </div>
+        </div>
+        <button onclick="openVercelGuide()" class="text-xs font-medium text-brand-terracotta hover:text-brand-terracottaHover underline whitespace-nowrap">
+          View 2-Minute Steps &rarr;
+        </button>
+      </section>
+
+      <!-- Editorial Hero Section -->
+      <section id="about" class="pb-16 pt-4 editorial-border-b">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-surface border border-brand-border text-xs font-mono text-brand-muted mb-6">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Available for Summer 2027 Internships & Collabs
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-normal tracking-tight text-brand-charcoal leading-[1.15] mb-6">
+          Undergraduate Computer Engineer & Builder exploring <span class="italic text-brand-terracotta">embodied AI</span>, system architecture, & human interfaces.
+        </h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4">
+          <div class="md:col-span-2 space-y-4 text-base sm:text-lg text-brand-muted leading-relaxed font-light">
+            <p>
+              I bridge the gap between low-level hardware constraints and high-level machine intelligence. Previously working on vision-language models for robotic manipulation, embedded telemetry boards, and distributed edge computing systems.
+            </p>
+            <p class="text-sm text-brand-charcoal/80">
+              When not reading papers or in the lab, I write interactive technical essays, design aesthetic interfaces, and build open-source research tooling.
+            </p>
+          </div>
+
+          <!-- Quick stats & Social handles -->
+          <div class="flex flex-col justify-between border-t md:border-t-0 md:border-l border-brand-border pt-4 md:pt-0 md:pl-6 space-y-4 text-sm">
+            <div>
+              <span class="block text-xs uppercase font-mono text-brand-subtle mb-1">Focus Areas</span>
+              <p class="text-brand-charcoal font-medium">VLM Agents, High-Speed FPGA, Web Infrastructure</p>
+            </div>
+            <div>
+              <span class="block text-xs uppercase font-mono text-brand-subtle mb-1">Affiliation</span>
+              <p class="text-brand-charcoal font-medium">B.S. Computer Engineering '27</p>
+            </div>
+            <div class="pt-2 flex flex-wrap gap-2">
+              <a href="https://github.com" target="_blank" rel="noreferrer" class="text-xs px-2.5 py-1 rounded bg-brand-surface hover:bg-brand-surfaceHover text-brand-charcoal font-mono inline-flex items-center gap-1 transition-colors">
+                GitHub ↗
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" class="text-xs px-2.5 py-1 rounded bg-brand-surface hover:bg-brand-surfaceHover text-brand-charcoal font-mono inline-flex items-center gap-1 transition-colors">
+                LinkedIn ↗
+              </a>
+              <button onclick="copyCurrentLink()" class="text-xs px-2.5 py-1 rounded bg-brand-surface hover:bg-brand-surfaceHover text-brand-charcoal font-mono inline-flex items-center gap-1 transition-colors">
+                Copy Link ⎘
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="py-16">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-3">
+          <div>
+            <span class="text-xs font-mono uppercase tracking-widest text-brand-terracotta font-semibold">Curated Portfolio</span>
+            <h2 class="text-3xl font-serif font-normal text-brand-charcoal mt-1">Featured Systems & Projects</h2>
+          </div>
+          <p class="text-xs text-brand-muted font-mono">Click any project to read the detailed case study</p>
+        </div>
+
+        <!-- Filter Tags -->
+        <div class="flex flex-wrap gap-2 mb-8" id="filter-bar">
+          <button onclick="filterProjects('all')" class="filter-btn active text-xs font-mono px-3 py-1.5 rounded-full border border-brand-charcoal bg-brand-charcoal text-brand-ivory transition-all">All Projects (4)</button>
+          <button onclick="filterProjects('AI / VLMs')" class="filter-btn text-xs font-mono px-3 py-1.5 rounded-full border border-brand-border bg-brand-surface text-brand-muted hover:text-brand-charcoal transition-all">AI / VLMs</button>
+          <button onclick="filterProjects('Hardware')" class="filter-btn text-xs font-mono px-3 py-1.5 rounded-full border border-brand-border bg-brand-surface text-brand-muted hover:text-brand-charcoal transition-all">Hardware & FPGA</button>
+          <button onclick="filterProjects('Full-stack')" class="filter-btn text-xs font-mono px-3 py-1.5 rounded-full border border-brand-border bg-brand-surface text-brand-muted hover:text-brand-charcoal transition-all">Full-stack & Tools</button>
+        </div>
+
+        <!-- Project Cards Grid -->
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Dynamically populated or rendered -->
+        </div>
+      </section>
+
+      <!-- Contact / Colophon Section -->
+      <section id="contact" class="py-16 editorial-border-b">
+        <div class="p-8 sm:p-12 rounded-2xl bg-brand-surface border border-brand-border flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+          <div class="max-w-md">
+            <span class="text-xs font-mono uppercase tracking-wider text-brand-terracotta font-semibold">Initiate Contact</span>
+            <h3 class="text-2xl sm:text-3xl font-serif text-brand-charcoal mt-1">Let’s build something enduring.</h3>
+            <p class="text-brand-muted text-sm mt-2 leading-relaxed">
+              Seeking research labs, firmware development opportunities, and early-stage AI engineering teams.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            <a href="mailto:alex.rivera@example.edu" class="px-5 py-3 rounded-xl bg-brand-charcoal text-brand-ivory text-sm font-medium hover:bg-brand-terracotta transition-colors text-center">
+              Send Email
+            </a>
+            <button onclick="openQRModal()" class="px-5 py-3 rounded-xl bg-brand-ivory border border-brand-border text-brand-charcoal text-sm font-medium hover:bg-white transition-colors text-center">
+              Generate QR Card
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="project-detail-container" class="hidden py-6 animate-fadeIn">
+      <!-- Breadcrumb Bar -->
+      <div class="flex items-center justify-between pb-6 mb-8 editorial-border-b">
+        <button onclick="showGalleryView()" class="inline-flex items-center gap-2 text-sm font-medium text-brand-muted hover:text-brand-charcoal transition-colors group">
+          <span class="transition-transform group-hover:-translate-x-1">&larr;</span> Back to All Projects
+        </button>
+        <div class="flex items-center gap-3">
+          <button onclick="copyProjectCaseStudyUrl()" class="text-xs font-mono text-brand-muted hover:text-brand-charcoal flex items-center gap-1 border border-brand-border px-2.5 py-1.5 rounded-lg bg-brand-surface">
+            <span>Share Case Study</span>
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          </button>
+          <button onclick="openQRModalForCurrentProject()" class="text-xs font-mono text-brand-terracotta hover:underline flex items-center gap-1">
+            QR Code ↗
+          </button>
+        </div>
+      </div>
+
+      <!-- Dynamic Content Injection Target -->
+      <article id="detail-content" class="space-y-12">
+        <!-- Injected via JavaScript renderProjectDetail() -->
+      </article>
+
+      <!-- Bottom Next / Previous Navigator -->
+      <div class="mt-16 pt-8 editorial-border-b flex justify-between items-center text-sm">
+        <button id="prev-project-btn" class="text-brand-muted hover:text-brand-charcoal flex items-center gap-2">
+          &larr; <span id="prev-project-name">Previous Project</span>
+        </button>
+        <button id="next-project-btn" class="text-brand-muted hover:text-brand-charcoal flex items-center gap-2">
+          <span id="next-project-name">Next Project</span> &rarr;
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="mt-auto editorial-border-b bg-brand-surface py-8">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-brand-muted font-mono gap-4">
+      <div>
+        Designed with Claude aesthetic principles &copy; 2026 Alex Rivera.
+      </div>
+      <div class="flex gap-4">
+        <a href="#about" onclick="showGalleryView()" class="hover:text-brand-charcoal">About</a>
+        <a href="#projects" onclick="showGalleryView()" class="hover:text-brand-charcoal">Work</a>
+        <button onclick="openVercelGuide()" class="hover:text-brand-charcoal">Deploy Guide</button>
+        <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="hover:text-brand-charcoal">Top ↑</button>
+      </div>
+    </div>
+  </footer>
+
+  <div id="qr-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-charcoal/50 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
+    <div class="bg-brand-ivory border border-brand-border rounded-2xl max-w-md w-full p-6 shadow-2xl relative transform scale-95 transition-transform duration-200" id="qr-modal-card">
+      <!-- Close button -->
+      <button onclick="closeQRModal()" class="absolute top-4 right-4 text-brand-muted hover:text-brand-charcoal p-1.5 rounded-full hover:bg-brand-surface">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+
+      <div class="text-center mb-5">
+        <span class="text-xs font-mono uppercase tracking-widest text-brand-terracotta font-semibold">Printable Asset</span>
+        <h3 class="text-xl font-serif text-brand-charcoal mt-1">Portfolio & Project QR Code</h3>
+        <p class="text-xs text-brand-muted mt-1">Put this on your paper resume, posters, or business card for instantaneous smartphone viewing.</p>
+      </div>
+
+      <!-- QR Display Canvas Container -->
+      <div class="bg-white p-4 rounded-xl border border-brand-border flex flex-col items-center justify-center mx-auto w-56 h-56 shadow-inner relative" id="qrcode-box">
+        <div id="qrcode"></div>
+      </div>
+
+      <!-- URL Input & Configuration -->
+      <div class="mt-5 space-y-3">
+        <div>
+          <label class="block text-xs font-mono text-brand-muted mb-1">Target Destination URL</label>
+          <div class="flex gap-2">
+            <input type="url" id="qr-input-url" class="w-full text-xs font-mono px-3 py-2 rounded-lg border border-brand-border bg-brand-surface focus:outline-none focus:ring-1 focus:ring-brand-terracotta" placeholder="https://your-portfolio.vercel.app">
+            <button onclick="updateQRCode()" class="px-3 py-2 rounded-lg bg-brand-charcoal text-brand-ivory text-xs font-medium hover:bg-brand-terracotta transition-colors whitespace-nowrap">
+              Refresh
+            </button>
+          </div>
+          <p class="text-[11px] text-brand-muted mt-1">Defaults to your active site. Once deployed to Vercel, paste your link here.</p>
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          <button onclick="downloadQRCodePNG()" class="flex-1 py-2.5 px-4 bg-brand-terracotta hover:bg-brand-terracottaHover text-white text-xs font-medium rounded-xl flex items-center justify-center gap-2 transition-colors">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Download PNG
+          </button>
+          <button onclick="copyCurrentLink()" class="py-2.5 px-4 bg-brand-surface hover:bg-brand-surfaceHover text-brand-charcoal text-xs font-medium rounded-xl border border-brand-border transition-colors">
+            Copy Link
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="vercel-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-charcoal/50 backdrop-blur-sm hidden opacity-0 transition-opacity duration-200">
+    <div class="bg-brand-ivory border border-brand-border rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative transform scale-95 transition-transform duration-200 max-h-[90vh] overflow-y-auto" id="vercel-modal-card">
+      <button onclick="closeVercelGuide()" class="absolute top-4 right-4 text-brand-muted hover:text-brand-charcoal p-1.5 rounded-full hover:bg-brand-surface">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center font-mono font-bold text-lg">▲</span>
+        <div>
+          <h3 class="text-xl font-serif text-brand-charcoal">How to Deploy to Vercel in 2 Minutes</h3>
+          <p class="text-xs text-brand-muted font-mono">No command-line needed &bull; 100% Free Tier</p>
+        </div>
+      </div>
+
+      <div class="space-y-4 text-sm text-brand-muted">
+        <div class="p-3.5 rounded-xl bg-brand-surface border border-brand-border">
+          <span class="font-mono text-xs text-brand-terracotta font-semibold uppercase">Why Vercel?</span>
+          <p class="text-xs text-brand-charcoal mt-1">
+            Vercel offers global edge hosting, instant SSL (https), and custom domains without maintaining servers. Because this entire site is compiled into a single clean file, deployment is effortless.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex gap-3">
+            <span class="w-6 h-6 rounded-full bg-brand-charcoal text-brand-ivory text-xs font-mono flex items-center justify-center shrink-0">1</span>
+            <div>
+              <p class="font-medium text-brand-charcoal text-xs">Save this file as <code class="font-mono bg-brand-surface px-1.5 py-0.5 rounded text-brand-terracotta">index.html</code></p>
+              <p class="text-xs text-brand-muted mt-0.5">Place it in a new folder on your computer (e.g. <code class="font-mono">my-portfolio/index.html</code>).</p>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <span class="w-6 h-6 rounded-full bg-brand-charcoal text-brand-ivory text-xs font-mono flex items-center justify-center shrink-0">2</span>
+            <div>
+              <p class="font-medium text-brand-charcoal text-xs">Sign up at <a href="https://vercel.com" target="_blank" class="text-brand-terracotta underline font-semibold">vercel.com</a></p>
+              <p class="text-xs text-brand-muted mt-0.5">Log in via your GitHub or Google account in 10 seconds.</p>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <span class="w-6 h-6 rounded-full bg-brand-charcoal text-brand-ivory text-xs font-mono flex items-center justify-center shrink-0">3</span>
+            <div>
+              <p class="font-medium text-brand-charcoal text-xs">Deploy: Drag & Drop or GitHub Repo</p>
+              <p class="text-xs text-brand-muted mt-0.5">
+                Either create a GitHub repo and click <strong>"Import"</strong> on Vercel, or drag your folder directly into the Vercel dashboard. It detects static HTML automatically!
+              </p>
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <span class="w-6 h-6 rounded-full bg-brand-charcoal text-brand-ivory text-xs font-mono flex items-center justify-center shrink-0">4</span>
+            <div>
+              <p class="font-medium text-brand-charcoal text-xs">Generate your Resume QR Code</p>
+              <p class="text-xs text-brand-muted mt-0.5">
+                Vercel will give you a live link like <code class="font-mono bg-brand-surface px-1.5 py-0.5 rounded">https://alex-rivera.vercel.app</code>. Open the QR Code tool on this page, paste that URL, and download your high-res print QR!
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-brand-border flex justify-end">
+          <button onclick="closeVercelGuide()" class="px-4 py-2 bg-brand-charcoal text-brand-ivory rounded-lg text-xs font-medium hover:bg-brand-terracotta transition-colors">
+            Got it, let's explore
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none bg-brand-charcoal text-brand-ivory px-4 py-2.5 rounded-xl shadow-xl border border-brand-charcoal/20 text-xs font-medium flex items-center gap-2">
+    <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+    </svg>
+    <span id="toast-message">Copied to clipboard!</span>
+  </div>
+
+  <script>
+    // Project Dataset with full case study breakdowns and images
+    const projectsData = [
+      {
+        id: "neuro-manipulator",
+        title: "Autonomous Visuomotor Robotic Gripper",
+        subtitle: "Zero-shot object manipulation using distilled Vision-Language-Action Models",
+        category: "AI / VLMs",
+        year: "2026",
+        role: "Lead Hardware & ML Researcher",
+        tags: ["PyTorch", "OpenVLA", "ROS2", "3D Printing"],
+        summary: "Developed a custom 4-DoF robotic end-effector and trained a quantized visuomotor transformer capable of executing real-world semantic pick-and-place directives in unstructured environments.",
+        coverImage: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80",
+        stats: [
+          { label: "Inference Latency", value: "32ms" },
+          { label: "Success Rate", value: "91.4%" },
+          { label: "BOM Cost", value: "< $320" }
+        ],
+        challenge: "Traditional robotic grasp pipelines rely heavily on rigid point cloud segmentation and scripted kinematic primitives. In diverse household setups with occlusions and arbitrary lighting, classical heuristics routinely fail to generalize to novel kitchenware and soft materials.",
+        architecture: "We adapted an OpenVLA foundation model, applying 4-bit AWQ quantization to deploy directly on an edge Nvidia Jetson Orin Nano. Perception feeds from an overhead RGB-D RealSense camera were fused with wrist-mounted tactile strain gauges through an asymmetric cross-attention layer.",
+        results: "Evaluated across 150 live pick-and-place experiments on unseen geometry (sponges, delicate glassware, fruits), the system achieved a 91.4% success rate without human intervention, operating at a responsive 30Hz loop.",
+        gallery: [
+          "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&w=800&q=80"
+        ],
+        links: {
+          code: "https://github.com",
+          paper: "https://arxiv.org",
+          demo: "#"
+        }
+      },
+      {
+        id: "riscv-accelerator",
+        title: "Pipelined RISC-V Neural Core on FPGA",
+        subtitle: "Custom systolic array coprocessor with INT8 tensor instructions",
+        category: "Hardware",
+        year: "2025",
+        role: "Digital Design Engineer",
+        tags: ["SystemVerilog", "Xilinx Vivado", "C++ Sim", "RISC-V"],
+        summary: "Designed a 5-stage hazard-resolved RV32IM processor complemented by a 4x4 INT8 systolic array for quantized convolutional inferences, synthesized on a Xilinx Artix-7 FPGA.",
+        coverImage: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80",
+        stats: [
+          { label: "Clock Frequency", value: "125 MHz" },
+          { label: "FPGA LUT Usage", value: "68%" },
+          { label: "Speedup vs CPU", value: "14.2x" }
+        ],
+        challenge: "Microcontroller edge devices frequently choke when computing convolution dot products for tinyML keyword spotting and vibration monitoring, consuming excessive battery and timing cycles.",
+        architecture: "Extended the standard RISC-V ISA with 3 custom instructions (vmac, vload, vact) mapped directly to a tightly-coupled hardware matrix multiplier. Added dual-port BRAM weight buffering and zero-cycle stall forwarding channels.",
+        results: "Validated full RTL synthesis with zero setup/hold timing violations at 125 MHz on the Digilent Basys 3 platform. Running CIFAR-10 classification delivered a 14.2x acceleration over pure software execution while drawing only 0.82W total power.",
+        gallery: [
+          "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&w=800&q=80"
+        ],
+        links: {
+          code: "https://github.com",
+          paper: null,
+          demo: "#"
+        }
+      },
+      {
+        id: "spectral-sim",
+        title: "SpectralMesh: Realtime Acoustic Raytracer",
+        subtitle: "Browser-based WebGPU physical reverberation simulator for room acoustics",
+        category: "Full-stack",
+        year: "2025",
+        role: "Author & WebGL Dev",
+        tags: ["WebGPU", "TypeScript", "WGSL", "WebAudio"],
+        summary: "Engineered a high-performance in-browser spatial audio engine executing 100,000 ray reflections per frame with dynamic material frequency absorption and impulse response generation.",
+        coverImage: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1200&q=80",
+        stats: [
+          { label: "Simulated Rays", value: "100k / frame" },
+          { label: "Frame Rate", value: "60 FPS" },
+          { label: "Spatial Precision", value: "16-band EQ" }
+        ],
+        challenge: "Architects and audio engineers traditionally must wait hours for offline acoustic baking to estimate room speech transmission indices (STI) and early decay times (EDT).",
+        architecture: "Wrote compute shaders in WGSL leveraging BVH (Bounding Volume Hierarchy) space partitioning to trace acoustic wave bounces off 3D room geometries in real-time. Convolved audio buffers on the fly using WebAudio AudioWorklets.",
+        results: "Empowered users to drag acoustic panels, audience curtains, and speaker coordinates around a 3D floorplan with instantaneous binaural feedback directly in Chrome and Safari without plugins.",
+        gallery: [
+          "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80"
+        ],
+        links: {
+          code: "https://github.com",
+          paper: null,
+          demo: "#"
+        }
+      },
+      {
+        id: "telemetry-link",
+        title: "Sub-GHz LoRaWAN Marine Telemetry Node",
+        subtitle: "Solar-harvesting ocean surface drifter measuring micro-currents and salinity",
+        category: "Hardware",
+        year: "2024",
+        role: "Embedded Systems Lead",
+        tags: ["STM32", "LoRa", "KiCad", "Ultra-Low Power"],
+        summary: "Engineered ultra-low-power buoys transmitting water temperature, GPS kinematic drift, and conductivity back to coastal gateways across 18km open-water ranges.",
+        coverImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+        stats: [
+          { label: "Transmission Range", value: "18.4 km" },
+          { label: "Sleep Current", value: "4.2 µA" },
+          { label: "Autonomous Life", value: "14+ Mos" }
+        ],
+        challenge: "Commercial oceanic sensors are prohibitively expensive ($3,000+ each) and often fail due to salt encrustation, galvanic corrosion, or excessive battery consumption in low-sunlight coastal fogs.",
+        architecture: "Developed custom 4-layer PCB with an STM32L4 MCU, MPPT solar harvesting circuit, and potted capacitive conductivity sensors inside a rugged IP68 marine-grade housing.",
+        results: "Successfully tracked 6 drifting nodes during a 4-month university marine biology study, mapping tidal eddies and coastal runoff with zero node dropouts.",
+        gallery: [
+          "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80",
+          "https://images.unsplash.com/photo-1498084393753-b411b2d26b34?auto=format&fit=crop&w=800&q=80"
+        ],
+        links: {
+          code: "https://github.com",
+          paper: "https://arxiv.org",
+          demo: "#"
+        }
+      }
+    ];
+
+    let currentFilter = 'all';
+    let qrcodeInstance = null;
+
+    function renderProjects(filter = 'all') {
+      const container = document.getElementById('projects-grid');
+      container.innerHTML = '';
+
+      const filtered = filter === 'all' 
+        ? projectsData 
+        : projectsData.filter(p => p.category === filter);
+
+      filtered.forEach((p, index) => {
+        const card = document.createElement('div');
+        card.className = "group cursor-pointer rounded-2xl bg-brand-surface/60 border border-brand-border overflow-hidden hover:border-brand-charcoal/30 transition-all duration-300 flex flex-col hover:-translate-y-1 shadow-sm hover:shadow-md";
+        card.onclick = () => openProjectDetail(p.id);
+
+        card.innerHTML = `
+          <!-- Image container -->
+          <div class="relative w-full h-52 overflow-hidden bg-brand-surface">
+            <img 
+              src="${p.coverImage}" 
+              alt="${p.title}" 
+              onerror="this.src='https://placehold.co/800x450/F3EFEA/1D1917?text=Project+Preview'"
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+            />
+            <div class="absolute top-3 left-3 flex gap-1.5 flex-wrap">
+              <span class="px-2 py-0.5 rounded-full text-[11px] font-mono font-medium bg-brand-ivory/90 backdrop-blur-md text-brand-charcoal border border-brand-border">
+                ${p.category}
+              </span>
+            </div>
+            <div class="absolute top-3 right-3">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-brand-charcoal text-brand-ivory">
+                ${p.year}
+              </span>
+            </div>
+          </div>
+
+          <!-- Content body -->
+          <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+            <div>
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-xs font-mono text-brand-terracotta">${p.role}</span>
+              </div>
+              <h3 class="text-xl font-serif text-brand-charcoal font-medium group-hover:text-brand-terracotta transition-colors leading-snug">
+                ${p.title}
+              </h3>
+              <p class="text-xs text-brand-muted mt-2 line-clamp-2 leading-relaxed">
+                ${p.summary}
+              </p>
+            </div>
+
+            <!-- Tags & Action button -->
+            <div class="pt-2 border-t border-brand-border/60 flex items-center justify-between">
+              <div class="flex flex-wrap gap-1.5">
+                ${p.tags.slice(0, 2).map(tag => `
+                  <span class="text-[10px] font-mono text-brand-muted bg-brand-ivory px-2 py-0.5 rounded border border-brand-border">
+                    ${tag}
+                  </span>
+                `).join('')}
+              </div>
+              <span class="text-xs font-medium text-brand-charcoal group-hover:text-brand-terracotta inline-flex items-center gap-1 transition-colors">
+                Case Study &rarr;
+              </span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Filter projects handler
+    function filterProjects(category) {
+      currentFilter = category;
+      const buttons = document.querySelectorAll('.filter-btn');
+      buttons.forEach(btn => {
+        if ((category === 'all' && btn.innerText.includes('All')) || btn.innerText.includes(category)) {
+          btn.className = "filter-btn active text-xs font-mono px-3 py-1.5 rounded-full border border-brand-charcoal bg-brand-charcoal text-brand-ivory transition-all";
+        } else {
+          btn.className = "filter-btn text-xs font-mono px-3 py-1.5 rounded-full border border-brand-border bg-brand-surface text-brand-muted hover:text-brand-charcoal transition-all";
+        }
+      });
+      renderProjects(category);
+    }
+
+    function showGalleryView() {
+      document.getElementById('gallery-container').classList.remove('hidden');
+      document.getElementById('project-detail-container').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Update browser URL hash cleanly without reload
+      if (history.pushState) {
+        history.pushState(null, null, ' ');
+      }
+    }
+
+    function openProjectDetail(id) {
+      const project = projectsData.find(p => p.id === id);
+      if (!project) return;
+
+      const galleryEl = document.getElementById('gallery-container');
+      const detailEl = document.getElementById('project-detail-container');
+      const contentEl = document.getElementById('detail-content');
+
+      galleryEl.classList.add('hidden');
+      detailEl.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Build Case Study Content
+      contentEl.innerHTML = `
+        <!-- Case Study Header -->
+        <header class="space-y-4">
+          <div class="flex flex-wrap items-center gap-2 text-xs font-mono text-brand-terracotta">
+            <span class="px-2.5 py-1 rounded-full bg-brand-tag border border-brand-terracotta/20 font-semibold">${project.category}</span>
+            <span>&bull;</span>
+            <span class="text-brand-muted">${project.year}</span>
+            <span>&bull;</span>
+            <span class="text-brand-muted">Role: ${project.role}</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-brand-charcoal leading-tight">
+            ${project.title}
+          </h1>
+
+          <p class="text-lg text-brand-muted font-serif italic max-w-3xl leading-relaxed">
+            ${project.subtitle}
+          </p>
+
+          <!-- Metrics Strip -->
+          <div class="grid grid-cols-3 gap-4 pt-6 pb-4">
+            ${project.stats.map(s => `
+              <div class="p-4 rounded-xl bg-brand-surface border border-brand-border">
+                <span class="block text-[11px] font-mono uppercase tracking-wider text-brand-muted">${s.label}</span>
+                <span class="text-xl sm:text-2xl font-serif font-semibold text-brand-charcoal mt-1 block">${s.value}</span>
+              </div>
+            `).join('')}
+          </div>
+        </header>
+
+        <!-- Main Banner Image -->
+        <div class="rounded-2xl overflow-hidden border border-brand-border shadow-sm">
+          <img src="${project.coverImage}" alt="${project.title}" onerror="this.src='https://placehold.co/1200x600/F3EFEA/1D1917?text=Full+Case+Study+Image'" class="w-full h-80 sm:h-96 md:h-[450px] object-cover" />
+        </div>
+
+        <!-- Deep Dive Narrative: 2-column editorial grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <!-- Main Narrative (2 cols) -->
+          <div class="md:col-span-2 space-y-8 text-base text-brand-charcoal/90 leading-relaxed font-light">
+            <section class="space-y-3">
+              <h3 class="text-xs font-mono uppercase tracking-wider text-brand-terracotta font-semibold">01. The Challenge</h3>
+              <p class="text-base text-brand-muted leading-relaxed">${project.challenge}</p>
+            </section>
+
+            <section class="space-y-3">
+              <h3 class="text-xs font-mono uppercase tracking-wider text-brand-terracotta font-semibold">02. Engineering & Architecture</h3>
+              <p class="text-base text-brand-muted leading-relaxed">${project.architecture}</p>
+            </section>
+
+            <section class="space-y-3">
+              <h3 class="text-xs font-mono uppercase tracking-wider text-brand-terracotta font-semibold">03. Quantitative Outcomes</h3>
+              <p class="text-base text-brand-muted leading-relaxed">${project.results}</p>
+            </section>
+
+            <!-- Project Visual Gallery -->
+            <div class="pt-4 space-y-3">
+              <h3 class="text-xs font-mono uppercase tracking-wider text-brand-terracotta font-semibold">System Artifacts & Schematics</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                ${project.gallery.map(img => `
+                  <div class="rounded-xl overflow-hidden border border-brand-border bg-brand-surface">
+                    <img src="${img}" alt="Artifact" onerror="this.src='https://placehold.co/800x500/F3EFEA/1D1917?text=Hardware+Artifact'" class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300" />
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar Metadata (1 col) -->
+          <div class="space-y-6">
+            <div class="p-6 rounded-2xl bg-brand-surface border border-brand-border space-y-5">
+              <div>
+                <span class="block text-xs font-mono uppercase text-brand-subtle mb-2">Tech Stack</span>
+                <div class="flex flex-wrap gap-1.5">
+                  ${project.tags.map(t => `
+                    <span class="text-xs font-mono px-2.5 py-1 rounded bg-brand-ivory border border-brand-border text-brand-charcoal">${t}</span>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div>
+                <span class="block text-xs font-mono uppercase text-brand-subtle mb-2">Artifacts & Verification</span>
+                <div class="space-y-2 text-xs font-medium">
+                  <a href="${project.links.code}" target="_blank" class="block w-full py-2 px-3 rounded-lg bg-brand-ivory border border-brand-border hover:border-brand-charcoal text-center text-brand-charcoal transition-colors">
+                    View Source Repository ↗
+                  </a>
+                  ${project.links.paper ? `
+                    <a href="${project.links.paper}" target="_blank" class="block w-full py-2 px-3 rounded-lg bg-brand-ivory border border-brand-border hover:border-brand-charcoal text-center text-brand-charcoal transition-colors">
+                      Download Tech Whitepaper (PDF) ↗
+                    </a>
+                  ` : ''}
+                </div>
+              </div>
+
+              <div class="pt-3 border-t border-brand-border">
+                <span class="block text-[11px] font-mono text-brand-muted mb-1">Resume Verification</span>
+                <p class="text-[11px] text-brand-muted">
+                  This case study is referenced under Project Section. Scan the QR code to verify live demonstration logs.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Set Previous / Next buttons
+      const currentIndex = projectsData.findIndex(p => p.id === id);
+      const prevIndex = (currentIndex - 1 + projectsData.length) % projectsData.length;
+      const nextIndex = (currentIndex + 1) % projectsData.length;
+
+      const prevProject = projectsData[prevIndex];
+      const nextProject = projectsData[nextIndex];
+
+      document.getElementById('prev-project-name').innerText = prevProject.title;
+      document.getElementById('next-project-name').innerText = nextProject.title;
+
+      document.getElementById('prev-project-btn').onclick = () => openProjectDetail(prevProject.id);
+      document.getElementById('next-project-btn').onclick = () => openProjectDetail(nextProject.id);
+
+      // Update location hash
+      window.location.hash = `project/${project.id}`;
+    }
+
+    function initQRGenerator() {
+      const currentUrl = window.location.href.split('#')[0];
+      const input = document.getElementById('qr-input-url');
+      if (!input.value) {
+        input.value = currentUrl;
+      }
+      renderQRCode(input.value);
+    }
+
+    function renderQRCode(url) {
+      const container = document.getElementById('qrcode');
+      container.innerHTML = '';
+
+      try {
+        qrcodeInstance = new QRCode(container, {
+          text: url,
+          width: 180,
+          height: 180,
+          colorDark: "#1D1917", // Anthropic Charcoal
+          colorLight: "#FFFFFF",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      } catch (err) {
+        console.error("QR Code generation error:", err);
+      }
+    }
+
+    function updateQRCode() {
+      const url = document.getElementById('qr-input-url').value.trim();
+      if (!url) return;
+      renderQRCode(url);
+      showToast("QR Code updated for: " + url.substring(0, 28) + "...");
+    }
+
+    function openQRModal() {
+      const modal = document.getElementById('qr-modal');
+      const card = document.getElementById('qr-modal-card');
+      const input = document.getElementById('qr-input-url');
+      
+      // Default to current URL if empty
+      if (!input.value) {
+        input.value = window.location.href;
+      }
+      renderQRCode(input.value);
+
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        card.classList.remove('scale-95');
+      }, 10);
+    }
+
+    function openQRModalForCurrentProject() {
+      const input = document.getElementById('qr-input-url');
+      input.value = window.location.href;
+      openQRModal();
+    }
+
+    function closeQRModal() {
+      const modal = document.getElementById('qr-modal');
+      const card = document.getElementById('qr-modal-card');
+      modal.classList.add('opacity-0');
+      card.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    function downloadQRCodePNG() {
+      const qrCanvas = document.querySelector('#qrcode canvas');
+      const qrImg = document.querySelector('#qrcode img');
+      
+      let dataUrl = '';
+      if (qrCanvas) {
+        dataUrl = qrCanvas.toDataURL('image/png');
+      } else if (qrImg && qrImg.src) {
+        dataUrl = qrImg.src;
+      } else {
+        showToast("Error generating image file");
+        return;
+      }
+
+      const downloadLink = document.createElement('a');
+      downloadLink.download = 'AlexRivera-Portfolio-QR.png';
+      downloadLink.href = dataUrl;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      showToast("High-Res QR Code downloaded!");
+    }
+
+    function openVercelGuide() {
+      const modal = document.getElementById('vercel-modal');
+      const card = document.getElementById('vercel-modal-card');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        card.classList.remove('scale-95');
+      }, 10);
+    }
+
+    function closeVercelGuide() {
+      const modal = document.getElementById('vercel-modal');
+      const card = document.getElementById('vercel-modal-card');
+      modal.classList.add('opacity-0');
+      card.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 200);
+    }
+
+    function copyCurrentLink() {
+      const url = window.location.href;
+      copyToClipboardText(url, "Portfolio link copied to clipboard!");
+    }
+
+    function copyProjectCaseStudyUrl() {
+      const url = window.location.href;
+      copyToClipboardText(url, "Case study link copied to clipboard!");
+    }
+
+    function copyToClipboardText(text, message) {
+      const tempInput = document.createElement("input");
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast(message || "Copied to clipboard!");
+      } catch (err) {
+        showToast("Could not auto-copy. Select link manually.");
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const text = document.getElementById('toast-message');
+      text.innerText = message;
+      toast.classList.remove('opacity-0', 'translate-y-20');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-20');
+      }, 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderProjects('all');
+      initQRGenerator();
+
+      // Check if arriving with a specific project hash
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#project/')) {
+        const projectId = hash.replace('#project/', '');
+        openProjectDetail(projectId);
+      }
+
+      // Close modal on Escape or background click
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeQRModal();
+          closeVercelGuide();
+        }
+      });
+
+      document.getElementById('qr-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'qr-modal') closeQRModal();
+      });
+
+      document.getElementById('vercel-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'vercel-modal') closeVercelGuide();
+      });
+    });
+  </script>
+</body>
+</html>
